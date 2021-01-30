@@ -1,0 +1,51 @@
+---
+- hosts: nomad_servers
+  # Server hosts setup
+  tasks:
+  - name: Create nomad_server dir
+    file:
+      path: /home/vagrant/nomad_server
+      state: directory
+      mode: '0755'
+
+  - name: Deploy nomad server config
+    template:
+      src: ./resources/nomad_server/nomad_server.hcl
+      dest: /home/vagrant/nomad_server/nomad_server.hcl
+      owner: vagrant
+      group: vagrant
+      mode: 0644
+
+  - name: Kill nomad
+    command: pkill -9 /home/vagrant/bin/nomad
+    args:
+      chdir: /home/vagrant/nomad_server/
+    ignore_errors: yes
+
+  - name: Run nomad server
+    command: screen -dmS nomad /home/vagrant/bin/nomad agent -config ./nomad_server.hcl
+    args:
+      chdir: /home/vagrant/nomad_server/
+
+
+# - hosts: clients
+#   # Server hosts setup
+#   tasks:
+#   - name: Create nomad_client dir
+#     file:
+#       path: /home/vagrant/nomad_client/nomad.d
+#       state: directory
+#       mode: '0755'
+
+#   - name: Deploy nomad server config
+#     copy:
+#       src: ./resources/nomad_client/nomad.d/config.json
+#       dest: /home/vagrant/nomad_client/nomad.d/config.json
+#       owner: vagrant
+#       group: vagrant
+#       mode: '0644'
+
+#   - name: Run nomad client
+#     command: screen -dmS nomad /home/vagrant/bin/nomad agent -config-dir ./nomad.d
+#     args:
+#       chdir: /home/vagrant/nomad_server/

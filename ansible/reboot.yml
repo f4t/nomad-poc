@@ -1,0 +1,27 @@
+---
+- hosts: all
+  tasks:
+  - name: Wipe Consul server data
+    file:
+      path: /home/vagrant/consul_server/data
+      state: absent
+      force: yes
+  - name: Wipe Consul client data
+    file:
+      path: /home/vagrant/consul_client/data
+      state: absent
+      force: yes
+  - name: Wipe Nomad server data
+    file:
+      path: /home/vagrant/nomad_server/data
+      state: absent
+      force: yes
+  - name: Wipe Nomad client data
+    file:
+      path: /home/vagrant/nomad_client/data
+      state: absent
+      force: yes
+
+  # - name: Reboot boxes
+  #   reboot:
+  #   become: yes

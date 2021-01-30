@@ -11,10 +11,45 @@ Vagrant.configure("2") do |config|
 
   # Setup Server hosts
   (1..SERVER_COUNT).each do |i|
-    config.vm.define "server#{i}" do |subconfig|
+    config.vm.define "consul-server-#{i}" do |subconfig|
       subconfig.vm.box = BOX_IMAGE
-      subconfig.vm.hostname =  "server#{i}"
-      subconfig.vm.network "private_network", ip: "10.0.50.#{100+i}"
+      subconfig.vm.hostname =  "consul-server-#{i}"
+      subconfig.vm.network "private_network", ip: "10.0.50.#{10+i}"
+      # subconfig.vm.network "forwarded_port", guest: 4646, host: 4600+i, auto_correct: true
+      # subconfig.vm.provision "shell", privileged: false, inline: <<-SHELL
+      #   echo "Server provisionning."
+      #   cd
+      #   # Copy all server resources
+      #   cp -pr /vagrant/resources/* .
+
+      #   # Consul:
+      #   echo "Provisionning Consul server"
+      #   cd ~/consul_server
+
+      #   screen -dmS consul \
+      #     consul agent -config-dir ./consul.d
+
+      #   echo "Consul server started. Waiting 10 seconds."
+      #   sleep 10
+
+      #   # Nomad:
+      #   echo "Provisionning Nomad server"
+      #   cd ~/nomad_server
+      #   SERVER_IP=$(ifconfig eth1 | grep 'inet ' | awk '{print $2}')
+      #   sed -i "s/^consul.*/consul { address = \\\"$SERVER_IP:8500\\\" }/" ./nomad_server.hcl
+      #   sed -i "s/^bind_addr.*/bind_addr = \\\"$SERVER_IP\\\"/" ./nomad_server.hcl
+      #   screen -dmS nomad \
+      #     nomad agent -config /home/vagrant/nomad_server/nomad_server.hcl
+      # SHELL
+    end
+  end
+
+  # Setup Server hosts
+  (1..SERVER_COUNT).each do |i|
+    config.vm.define "nomad-server-#{i}" do |subconfig|
+      subconfig.vm.box = BOX_IMAGE
+      subconfig.vm.hostname =  "nomad-server-#{i}"
+      subconfig.vm.network "private_network", ip: "10.0.50.#{20+i}"
       # subconfig.vm.network "forwarded_port", guest: 4646, host: 4600+i, auto_correct: true
       # subconfig.vm.provision "shell", privileged: false, inline: <<-SHELL
       #   echo "Server provisionning."
@@ -46,10 +81,10 @@ Vagrant.configure("2") do |config|
 
   # Setup Client hosts
   (1..CLIENT_COUNT).each do |i|
-    config.vm.define "client#{i}" do |subconfig|
+    config.vm.define "nomad-client-#{i}" do |subconfig|
       subconfig.vm.box = BOX_IMAGE
-      subconfig.vm.hostname =  "client#{i}"
-      subconfig.vm.network "private_network", ip: "10.0.50.#{200+i}"
+      subconfig.vm.hostname =  "nomad-client-#{i}"
+      subconfig.vm.network "private_network", ip: "10.0.50.#{30+i}"
       # subconfig.vm.network "forwarded_port", guest: 4646, host: 4600+i, auto_correct: true
       # subconfig.vm.network "forwarded_port", guest: 8500, host: 8500+i, auto_correct: true
       # subconfig.vm.provision "shell", privileged: false, inline: <<-SHELL
@@ -70,10 +105,10 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.provider "virtualbox" do |vb|
-    vb.memory = 2048
-    vb.cpus = 2
-  end
+  # config.vm.provider "virtualbox" do |vb|
+  #   vb.memory = 2048
+  #   vb.cpus = 2
+  # end
 
   # Common provisionning:
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
