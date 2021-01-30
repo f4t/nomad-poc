@@ -1,0 +1,26 @@
+{
+    "server": true,
+    "bootstrap_expect": 3,
+    "bind_addr": "{{ GetInterfaceIP \"eth1\" }}",
+    "datacenter": "HKD",
+    "data_dir": "./data",
+    "domain": "consul",
+    "enable_script_checks": true,
+    "dns_config": {
+        "enable_truncate": true,
+        "only_passing": true
+    },
+    "enable_syslog": true,
+    "encrypt": "FxHaxL10ceWXGc8/E8YADZS1bJN01juaX9hNi4rgYOI=",
+    "leave_on_terminate": true,
+    "log_level": "INFO",
+    "rejoin_after_leave": true,
+    "retry_join": [
+        "10.0.50.101",
+        "10.0.50.102",
+        "10.0.50.103"
+    ],
+    "ui_config": {
+        "enabled": true
+    }
+}

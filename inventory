@@ -1,0 +1,13 @@
+[servers]
+10.0.50.101
+10.0.50.102
+10.0.50.103
+
+[clients]
+10.0.50.201
+10.0.50.202
+
+[all:vars]
+ansible_ssh_user=vagrant
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
