@@ -1,6 +1,6 @@
 {
-    "server": true,
     "bootstrap_expect": 3,
+    "client_addr": "{{ GetInterfaceIP \"eth1\" }}",
     "bind_addr": "{{ GetInterfaceIP \"eth1\" }}",
     "datacenter": "HKD",
     "data_dir": "./data",
@@ -15,12 +15,14 @@
     "leave_on_terminate": true,
     "log_level": "INFO",
     "rejoin_after_leave": true,
+    "server": true,
     "retry_join": [
-        "10.0.50.101",
-        "10.0.50.102",
-        "10.0.50.103"
+        "10.0.50.11",
+        "10.0.50.12",
+        "10.0.50.13"
     ],
     "ui_config": {
         "enabled": true
     }
 }
+
