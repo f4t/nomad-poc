@@ -50,4 +50,3 @@
       dest: /home/vagrant/bin
       remote_src: yes
     when: not consul_bin.stat.exists
-

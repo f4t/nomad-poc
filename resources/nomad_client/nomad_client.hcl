@@ -3,8 +3,8 @@ log_level = "INFO"
 disable_update_check = true
 
 # Setup data dir
-data_dir = "/home/vagrant/nomad_clientdata"
-bind_addr = "127.0.0.1"
+data_dir = "/home/vagrant/nomad_client/data"
+bind_addr = "{{ansible_eth1.ipv4.address}}"
 
 datacenter = "HKD"
 

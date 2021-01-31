@@ -1,5 +1,5 @@
 ---
-- hosts: nomad_servers
+- hosts: consul_clients
   # Server hosts setup
   tasks:
   - name: Create consul_client dir
@@ -18,8 +18,6 @@
 
   - name: Kill consul
     command: pkill -9 /home/vagrant/bin/consul
-    args:
-      chdir: /home/vagrant/consul_client/
     ignore_errors: yes
 
   - name: Run Consul client
