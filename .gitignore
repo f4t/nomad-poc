@@ -1,2 +1,4 @@
 bin/
 .vagrant/
+id_rsa.pub
+
