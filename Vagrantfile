@@ -15,32 +15,6 @@ Vagrant.configure("2") do |config|
       subconfig.vm.box = BOX_IMAGE
       subconfig.vm.hostname =  "consul-server-#{i}"
       subconfig.vm.network "private_network", ip: "10.0.50.#{10+i}"
-      # subconfig.vm.network "forwarded_port", guest: 4646, host: 4600+i, auto_correct: true
-      # subconfig.vm.provision "shell", privileged: false, inline: <<-SHELL
-      #   echo "Server provisionning."
-      #   cd
-      #   # Copy all server resources
-      #   cp -pr /vagrant/resources/* .
-
-      #   # Consul:
-      #   echo "Provisionning Consul server"
-      #   cd ~/consul_server
-
-      #   screen -dmS consul \
-      #     consul agent -config-dir ./consul.d
-
-      #   echo "Consul server started. Waiting 10 seconds."
-      #   sleep 10
-
-      #   # Nomad:
-      #   echo "Provisionning Nomad server"
-      #   cd ~/nomad_server
-      #   SERVER_IP=$(ifconfig eth1 | grep 'inet ' | awk '{print $2}')
-      #   sed -i "s/^consul.*/consul { address = \\\"$SERVER_IP:8500\\\" }/" ./nomad_server.hcl
-      #   sed -i "s/^bind_addr.*/bind_addr = \\\"$SERVER_IP\\\"/" ./nomad_server.hcl
-      #   screen -dmS nomad \
-      #     nomad agent -config /home/vagrant/nomad_server/nomad_server.hcl
-      # SHELL
     end
   end
 
@@ -50,32 +24,6 @@ Vagrant.configure("2") do |config|
       subconfig.vm.box = BOX_IMAGE
       subconfig.vm.hostname =  "nomad-server-#{i}"
       subconfig.vm.network "private_network", ip: "10.0.50.#{20+i}"
-      # subconfig.vm.network "forwarded_port", guest: 4646, host: 4600+i, auto_correct: true
-      # subconfig.vm.provision "shell", privileged: false, inline: <<-SHELL
-      #   echo "Server provisionning."
-      #   cd
-      #   # Copy all server resources
-      #   cp -pr /vagrant/resources/* .
-
-      #   # Consul:
-      #   echo "Provisionning Consul server"
-      #   cd ~/consul_server
-
-      #   screen -dmS consul \
-      #     consul agent -config-dir ./consul.d
-
-      #   echo "Consul server started. Waiting 10 seconds."
-      #   sleep 10
-
-      #   # Nomad:
-      #   echo "Provisionning Nomad server"
-      #   cd ~/nomad_server
-      #   SERVER_IP=$(ifconfig eth1 | grep 'inet ' | awk '{print $2}')
-      #   sed -i "s/^consul.*/consul { address = \\\"$SERVER_IP:8500\\\" }/" ./nomad_server.hcl
-      #   sed -i "s/^bind_addr.*/bind_addr = \\\"$SERVER_IP\\\"/" ./nomad_server.hcl
-      #   screen -dmS nomad \
-      #     nomad agent -config /home/vagrant/nomad_server/nomad_server.hcl
-      # SHELL
     end
   end
 
@@ -85,23 +33,6 @@ Vagrant.configure("2") do |config|
       subconfig.vm.box = BOX_IMAGE
       subconfig.vm.hostname =  "nomad-client-#{i}"
       subconfig.vm.network "private_network", ip: "10.0.50.#{30+i}"
-      # subconfig.vm.network "forwarded_port", guest: 4646, host: 4600+i, auto_correct: true
-      # subconfig.vm.network "forwarded_port", guest: 8500, host: 8500+i, auto_correct: true
-      # subconfig.vm.provision "shell", privileged: false, inline: <<-SHELL
-      #   echo "Client provisionning."
-      #   cd
-      #   # Copy all client resources
-      #   cp -pr /vagrant/resources/* .
-
-      #   # Nomad:
-      #   echo "Provisionning Nomad client"
-      #   cd ~/nomad_client
-      #   SERVER_IP=$(ifconfig eth1 | grep 'inet ' | awk '{print $2}')
-      #   sed -i "s/^consul.*/consul { address = \\\"$SERVER_IP:8500\\\" }/" ./nomad_client.hcl
-      #   sed -i "s/^bind_addr.*/bind_addr = \\\"$SERVER_IP\\\"/" ./nomad_client.hcl
-      #   screen -dmS nomad \
-      #     nomad agent -config /home/vagrant/nomad_client/nomad_client.hcl
-      # SHELL
     end
   end
 
@@ -113,9 +44,6 @@ Vagrant.configure("2") do |config|
   # Common provisionning:
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
     echo "Common provisionning"
-    # cp -pr /vagrant/bin/ /home/vagrant/
-    # echo 'export PATH=/home/vagrant/bin:$PATH' >> ~/.bashrc
-    # sudo yum install -y screen net-tools lsof nmap htop
     cat /vagrant/id_rsa.pub >> ~/.ssh/authorized_keys
     cat ~/.ssh/authorized_keys | sort -u > ~/.ssh/authorized_keys.2
     mv ~/.ssh/authorized_keys.2 ~/.ssh/authorized_keys
