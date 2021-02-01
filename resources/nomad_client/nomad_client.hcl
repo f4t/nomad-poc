@@ -10,6 +10,7 @@ datacenter = "HKD"
 
 # Enable the client
 client {
+  network_interface = "eth1"
   enabled = true
   template {
       disable_file_sandbox = true
