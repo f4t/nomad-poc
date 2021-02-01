@@ -1,6 +1,9 @@
 ---
 - hosts: all
   tasks:
+  - name: Reboot boxes
+    reboot:
+    become: yes
   - name: Wipe Consul server data
     file:
       path: /home/vagrant/consul_server/data
@@ -21,7 +24,3 @@
       path: /home/vagrant/nomad_client/data
       state: absent
       force: yes
-
-  # - name: Reboot boxes
-  #   reboot:
-  #   become: yes

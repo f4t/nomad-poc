@@ -20,7 +20,7 @@
     command: pkill -9 /home/vagrant/bin/nomad
     ignore_errors: yes
 
-  - name: Run nomad server
+  - name: Run nomad client
     command: screen -dmS nomad /home/vagrant/bin/nomad agent -config ./nomad_client.hcl
     args:
       chdir: /home/vagrant/nomad_client/
