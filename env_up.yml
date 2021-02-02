@@ -19,7 +19,29 @@
   roles:
   - nomad_client
 
+# Run Nomad Jobs
 - hosts: localhost
   tasks:
-  - name: ping
-    ping:
+  - name: Run node_exporter job
+    community.general.nomad_job: # Requires python module "python-nomad"
+      host: 10.0.50.21
+      use_ssl: no
+      state: present
+      content: "{{ lookup('ansible.builtin.file', './nomad_jobs/node_exporter.nomad') }}"
+      timeout: 120
+
+  - name: Run fabio job
+    community.general.nomad_job:
+      host: 10.0.50.21
+      use_ssl: no
+      state: present
+      content: "{{ lookup('ansible.builtin.file', './nomad_jobs/fabio.nomad') }}"
+      timeout: 120
+
+  - name: Run licd job
+    community.general.nomad_job:
+      host: 10.0.50.21
+      use_ssl: no
+      state: present
+      content: "{{ lookup('ansible.builtin.file', './nomad_jobs/licd.nomad') }}"
+      timeout: 120
