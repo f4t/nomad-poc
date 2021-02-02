@@ -1,0 +1,23 @@
+---
+- name: Create consul_client dir
+  file:
+    path: /home/vagrant/consul_client/consul.d
+    state: directory
+    mode: '0755'
+
+- name: Deploy consul client config
+  copy:
+    src: ./resources/consul_client/consul.d/config.json
+    dest: /home/vagrant/consul_client/consul.d/config.json
+    owner: vagrant
+    group: vagrant
+    mode: '0644'
+
+- name: Kill consul
+  command: pkill -9 /home/vagrant/bin/consul
+  ignore_errors: yes
+
+- name: Run Consul client
+  command: screen -dmS consul /home/vagrant/bin/consul agent -config-dir ./consul.d
+  args:
+    chdir: /home/vagrant/consul_client/

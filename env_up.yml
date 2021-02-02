@@ -1,0 +1,25 @@
+---
+# - hosts: all
+#   roles:
+#   - wipe_env
+
+# - hosts: consul_servers
+#   roles:
+#   - consul_server
+
+# - hosts: consul_clients
+#   roles:
+#   - consul_client
+
+# - hosts: nomad_servers
+#   roles:
+#   - nomad_server
+
+# - hosts: nomad_clients
+#   roles:
+#   - nomad_client
+
+- hosts: localhost
+  tasks:
+  - name: ping
+    ping:
