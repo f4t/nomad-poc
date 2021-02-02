@@ -1,0 +1,47 @@
+---
+- hosts: itrs_gateway
+  tasks:
+    - name: Create packages folder
+      file:
+        path: /home/vagrant/packages
+        state: directory
+    # Gateway
+    - name: Unarchive gateway binaries
+      unarchive:
+        src: ./packages/geneos-gateway-5.5.1-linux-x64.tar.gz
+        dest: /home/vagrant/packages
+    - name: Create symlink for gateway bin
+      file:
+        src: "/home/vagrant/packages/gateway/gateway2.linux_64"
+        dest: "/home/vagrant/bin/gateway"
+        state: link
+    # Netprobe
+    - name: Unarchive netprobe binaries
+      unarchive:
+        src: ./packages/geneos-netprobe-5.5.2-linux-x64.tar.gz
+        dest: /home/vagrant/packages
+    - name: Create symlink for netprobe bin
+      file:
+        src: "/home/vagrant/packages/netprobe/netprobe.linux_64"
+        dest: "/home/vagrant/bin/netprobe"
+        state: link
+    # licd
+    - name: Unarchive licd binaries
+      unarchive:
+        src: ./packages/geneos-licd-5.5.0-linux-x64.tar.gz
+        dest: /home/vagrant/packages
+    - name: Create symlink for licd bin
+      file:
+        src: "/home/vagrant/packages/licd/licd.linux_64"
+        dest: "/home/vagrant/bin/licd"
+        state: link
+
+    # TODO: this stuff should go to Vault
+    - name: Create not_so_secrets folder
+      file:
+        path: /home/vagrant/not_so_secrets
+        state: directory
+    - name: Create not_so_secrets folder
+      copy:
+        src: "./packages/geneos.lic"
+        dest: "/home/vagrant/not_so_secrets/geneos.lic"
