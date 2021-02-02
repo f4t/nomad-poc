@@ -1,4 +1,4 @@
-job "job" {
+job "itrs" {
   datacenters = ["HKD"]
   type = "service"
 
@@ -7,15 +7,14 @@ job "job" {
   //   value     = "nomad-client-2"
   // }
 
-  group "group" {
-    count = 5
+  group "geneos" {
+    count = 1
 
     network {
-      port "piouhttp" {}
+      port "licd" {}
     }
 
-    task "task" {
-
+    task "licd" {
       driver = "raw_exec"
 
       config {
@@ -27,20 +26,21 @@ job "job" {
         destination = "local/runner.bash"
         data = <<EOH
 #!/bin/bash
-echo "Salut toi bienvenue sur $(hostname) avec ${NOMAD_PORT_piouhttp}" > local/index.html
 cd local/
-python -m SimpleHTTPServer ${NOMAD_PORT_piouhttp}
+cp ~/not_so_secrets/geneos.lic . # TODO: this should go to Vault
+~/bin/licd -port ${NOMAD_PORT_licd}
 EOH
       }
 
       service {
-        tags = ["pioupiou", "http", "urlprefix-/index.html"]
-        port = "piouhttp"
+        // tags = ["itrs", "http", "urlprefix-/licd"]
+        tags = ["pioupiou", "http", "urlprefix-:1234 proto=tcp"]
+        port = "licd"
         check {
           type     = "tcp"
-          port     = "piouhttp"
-          interval = "10s"
-          timeout  = "2s"
+          port     = "licd"
+          interval = "300s"
+          timeout  = "30s"
         }
       }
 
@@ -51,4 +51,3 @@ EOH
     }
   }
 }
-
