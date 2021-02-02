@@ -1,7 +1,7 @@
 {
     "bootstrap_expect": 3,
-    "client_addr": "{{ GetInterfaceIP \"eth1\" }}",
-    "bind_addr": "{{ GetInterfaceIP \"eth1\" }}",
+    "client_addr": "{{ '{{' }} GetInterfaceIP \"eth1\" {{ '}}' }}",
+    "bind_addr": "{{ '{{' }} GetInterfaceIP \"eth1\" {{ '}}' }}",
     "datacenter": "HKD",
     "data_dir": "./data",
     "domain": "consul",

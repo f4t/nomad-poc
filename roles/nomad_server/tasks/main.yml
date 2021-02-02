@@ -7,7 +7,7 @@
 
 - name: Deploy nomad server config
   template:
-    src: ./resources/nomad_server/nomad_server.hcl
+    src: nomad_server.hcl
     dest: /home/vagrant/nomad_server/nomad_server.hcl
     owner: vagrant
     group: vagrant

@@ -6,12 +6,12 @@
     mode: '0755'
 
 - name: Deploy consul server config
-  copy:
-    src: ./resources/consul_server/consul.d/config.json
+  template:
+    src: config.json
     dest: /home/vagrant/consul_server/consul.d/config.json
     owner: vagrant
     group: vagrant
-    mode: '0644'
+    mode: 0644
 
 - name: Kill consul
   command: pkill -9 /home/vagrant/bin/consul
