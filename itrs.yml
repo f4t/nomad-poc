@@ -1,0 +1,4 @@
+---
+- hosts: itrs_gateways
+  roles:
+  - itrs_gateways

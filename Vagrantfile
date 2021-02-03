@@ -49,4 +49,9 @@ Vagrant.configure("2") do |config|
     mv ~/.ssh/authorized_keys.2 ~/.ssh/authorized_keys
     chmod 600 ~/.ssh/authorized_keys
   SHELL
+
+  config.vm.provision "shell", privileged: true, inline: <<-SHELL
+    cat /vagrant/hosts | grep -v $(hostname) >> /etc/hosts
+  SHELL
+  
 end

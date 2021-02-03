@@ -34,7 +34,6 @@ EOH
 
       service {
         // tags = ["itrs", "http", "urlprefix-/licd"]
-        // tags = ["urlprefix-:1234 proto=tcp"]
         tags = ["urlprefix-:7041 proto=tcp"]
         port = "licd"
         check {

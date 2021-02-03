@@ -14,11 +14,14 @@
       - lsof
       - nmap
       - telnet
+      - tcpdump
       - screen 
       - net-tools 
       - lsof
       - htop
       - unzip
+      - bind-utils
+      - git
       state: latest
     become: yes
 
@@ -35,7 +38,7 @@
 
   - name: Install Nomad
     unarchive:
-      src: https://releases.hashicorp.com/nomad/1.0.2/nomad_1.0.2_linux_amd64.zip
+      src: https://releases.hashicorp.com/nomad/1.0.3/nomad_1.0.3_linux_amd64.zip
       dest: /home/vagrant/bin
       remote_src: yes
     when: not nomad_bin.stat.exists
@@ -51,6 +54,18 @@
       dest: /home/vagrant/bin
       remote_src: yes
     when: not consul_bin.stat.exists
+
+  - name: Check levant bin
+    stat:
+      path: "/home/vagrant/bin/levant"
+    register: levant_bin
+
+  - name: Install levant
+    unarchive:
+      src: https://releases.hashicorp.com/levant/0.3.0-beta1/levant_0.3.0-beta1_linux_amd64.zip
+      dest: /home/vagrant/bin
+      remote_src: yes
+    when: not levant_bin.stat.exists
 
   - name: Check node_exporter bin
     stat:
@@ -82,7 +97,7 @@
       mode: '0755'
     when: not fabio.stat.exists
 
-- hosts: itrs_gateway
+- hosts: itrs_gateways
   tasks:
     - name: Create packages folder
       file:

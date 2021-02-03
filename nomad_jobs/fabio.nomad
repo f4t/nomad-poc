@@ -21,9 +21,15 @@ job "fabio" {
         data = <<EOH
 #!/bin/bash
 export LISTEN_IP=$(/usr/sbin/ifconfig eth1 | grep 'inet ' | awk '{print $2}')
-# ~/bin/fabio -proxy.strategy=rr
+
+# Regular HTTP proxy:
 #~/bin/fabio -ui.addr ${LISTEN_IP}:9998 -proxy.addr ${LISTEN_IP}:9999
-#~/bin/fabio -ui.addr ${LISTEN_IP}:9998 -proxy.addr "${LISTEN_IP}:1234;proto=tcp"
+# ~/bin/fabio -proxy.strategy=rr
+
+# TCP : https://fabiolb.net/feature/tcp-proxy/
+#~/bin/fabio -ui.addr ${LISTEN_IP}:9998 -proxy.addr "${LISTEN_IP}:7041;proto=tcp"
+
+# Dynamic TCP: https://fabiolb.net/feature/tcp-dynamic-proxy/
 ~/bin/fabio -ui.addr ${LISTEN_IP}:9998 -proxy.addr "${LISTEN_IP};proto=tcp-dynamic;refresh=5s"
 EOH
       }
