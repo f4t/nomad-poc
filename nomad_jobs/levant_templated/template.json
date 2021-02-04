@@ -1,0 +1,34 @@
+{
+  "gateways": {
+    "nomad-client-1": [
+      {
+        "name": "hk-fo-prod",
+        "port": "7100"
+      },
+      {
+        "name": "hk-innovation-prod",
+        "port": "7101"
+      },
+      {
+        "name": "hk-bo-prod",
+        "port": "7102"
+      },
+      {
+        "name": "hk-gitan-prod",
+        "port": "7103"
+      }
+    ],
+    "nomad-client-2": [
+      {
+        "name": "HK_INFRA_PROD",
+        "port": "7102"
+      }
+    ]
+  },
+  "global": {
+    "licd": {
+      "host":"10.0.50.32",
+      "port": "7041"
+    }
+  }
+}
