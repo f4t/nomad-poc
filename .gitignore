@@ -2,4 +2,5 @@ packages/
 .vagrant/
 gateway_config/
 id_rsa.pub
+id_rsa
 

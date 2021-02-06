@@ -3,21 +3,21 @@
     "nomad-client-1": [
       {
         "name": "hk-fo-prod",
-        "port": "7101"
+        "port": "17101"
       },
       {
         "name": "hk-innovation-prod",
-        "port": "7102"
+        "port": "17102"
       },
       {
         "name": "hk-bo-prod",
-        "port": "7103"
+        "port": "17103"
       }
     ],
     "nomad-client-2": [
       {
         "name": "hk-infra-prod",
-        "port": "7101"
+        "port": "17101"
       }
     ]
   },
@@ -25,6 +25,9 @@
     "licd": {
       "host":"10.0.50.32",
       "port": "7041"
+    },
+    "paths": {
+      "config_repo": "/home/vagrant/gateway_config"
     }
   }
 }

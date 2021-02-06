@@ -29,12 +29,13 @@ job "gateways-[[ env "JOB_GATEWAY_HOST" ]]" {
         destination = "local/runner.bash"
         data = <<EOH
 #!/bin/bash
-cd local
+cd ${NOMAD_TASK_DIR}/local
 echo "Gateway name: [[$gateway.name]] <br/>" >> index.html
 echo "Gateway port: [[$gateway.port]] <br/>" >> index.html
 echo "Server name: [[$gateway_server]] <br/>" >> index.html
 echo "Licd host: [[ $Values.global.licd.port ]] <br/>" >> index.html
 echo "Licd port: [[ $Values.global.licd.host ]] <br/>" >> index.html
+#env >> index.html
 cat index.html
 python -m SimpleHTTPServer ${NOMAD_PORT_gateway_port}
 EOH

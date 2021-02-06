@@ -2,6 +2,11 @@
 # Basic host setup to be applied to fresh VMs
 - hosts: all
   tasks:
+  - name: Copy ssh config file (allow github ssh over VPN)
+    copy:
+      src: "~/.ssh/config"
+      dest: "/home/vagrant/.ssh/config"
+      mode: '0600'
   - name: Install epel-release
     yum:
       name:

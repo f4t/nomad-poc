@@ -27,10 +27,12 @@ export LISTEN_IP=$(/usr/sbin/ifconfig eth1 | grep 'inet ' | awk '{print $2}')
 # ~/bin/fabio -proxy.strategy=rr
 
 # TCP : https://fabiolb.net/feature/tcp-proxy/
-#~/bin/fabio -ui.addr ${LISTEN_IP}:9998 -proxy.addr "${LISTEN_IP}:7041;proto=tcp"
+# Single-purpose proxy on 1 specified port only
+~/bin/fabio -ui.addr ${LISTEN_IP}:9998 -proxy.addr "${LISTEN_IP}:7041;proto=tcp"
 
 # Dynamic TCP: https://fabiolb.net/feature/tcp-dynamic-proxy/
-~/bin/fabio -ui.addr ${LISTEN_IP}:9998 -proxy.addr "${LISTEN_IP};proto=tcp-dynamic;refresh=5s"
+# Will dynamically open a TCP port based on consul registered tags
+#~/bin/fabio -ui.addr ${LISTEN_IP}:9998 -proxy.addr "${LISTEN_IP};proto=tcp-dynamic;refresh=5s"
 EOH
       }
     }

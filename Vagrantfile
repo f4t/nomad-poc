@@ -47,11 +47,16 @@ Vagrant.configure("2") do |config|
     cat /vagrant/id_rsa.pub >> ~/.ssh/authorized_keys
     cat ~/.ssh/authorized_keys | sort -u > ~/.ssh/authorized_keys.2
     mv ~/.ssh/authorized_keys.2 ~/.ssh/authorized_keys
-    chmod 600 ~/.ssh/authorized_keys
+    cp /vagrant/id_rsa ~/.ssh/
+    cp /vagrant/id_rsa.pub ~/.ssh/
+    chmod 600 ~/.ssh/*
+
   SHELL
 
   config.vm.provision "shell", privileged: true, inline: <<-SHELL
     cat /vagrant/hosts | grep -v $(hostname) >> /etc/hosts
+    cat /etc/hosts | sort -u > /tmp/hosts
+    mv /tmp/hosts /etc/hosts
   SHELL
   
 end

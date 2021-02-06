@@ -5,12 +5,7 @@
     state: absent
   become: yes
 
-# TODO: Replace this with actual git clone
-- name: Prepare folder gateway_config for cloned repo
-  file:
-    path: "/home/vagrant/gateway_config"
-    state: directory
 - name: Clone Gateway config repo
-  copy:
-    src: "./templates/gateway_config/"
-    dest: "/home/vagrant/gateway_config"
+  git:
+    repo: git@github.com:f4t/gateway-config.git
+    dest: /home/vagrant/gateway_config
