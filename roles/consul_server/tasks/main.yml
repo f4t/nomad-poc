@@ -7,8 +7,8 @@
 
 - name: Deploy consul server config
   template:
-    src: config.json
-    dest: /home/vagrant/consul_server/consul.d/config.json
+    src: consul_server.hcl
+    dest: /home/vagrant/consul_server/consul.d/consul_server.hcl
     owner: vagrant
     group: vagrant
     mode: 0644
