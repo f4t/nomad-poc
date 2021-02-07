@@ -36,6 +36,15 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  # Setup Vault Server hosts
+  (1..SERVER_COUNT).each do |i|
+    config.vm.define "vault-server-#{i}" do |subconfig|
+      subconfig.vm.box = BOX_IMAGE
+      subconfig.vm.hostname =  "vault-server-#{i}"
+      subconfig.vm.network "private_network", ip: "10.0.50.#{40+i}"
+    end
+  end
+
   config.vm.provider "virtualbox" do |vb|
     vb.memory = 2048
     vb.cpus = 2

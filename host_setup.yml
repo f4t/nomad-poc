@@ -60,6 +60,18 @@
       remote_src: yes
     when: not consul_bin.stat.exists
 
+  - name: Check Vault bin
+    stat:
+      path: "/home/vagrant/bin/vault"
+    register: vault_bin
+
+  - name: Install Vault
+    unarchive:
+      src: https://releases.hashicorp.com/vault/1.6.2/vault_1.6.2_linux_amd64.zip
+      dest: /home/vagrant/bin
+      remote_src: yes
+    when: not vault_bin.stat.exists
+
   - name: Check levant bin
     stat:
       path: "/home/vagrant/bin/levant"

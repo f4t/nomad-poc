@@ -23,6 +23,11 @@
 10.0.50.31
 10.0.50.32
 
+[vault_servers]
+10.0.50.41
+10.0.50.42
+10.0.50.43
+
 [all:vars]
 ansible_ssh_user=vagrant
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
