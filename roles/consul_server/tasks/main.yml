@@ -13,6 +13,23 @@
     group: vagrant
     mode: 0644
 
+- name: Deploy consul CA cert
+  template:
+    src: "{{ item }}"
+    dest: "/home/vagrant/consul_server/{{ item }}"
+    owner: vagrant
+    group: vagrant
+    mode: 0600
+  with_items:
+    - consul-agent-ca.pem # Consul CA public cert
+    - consul-agent-ca-key.pem # Consul CA private key
+
+- name: Generate consul server certs
+  command: /home/vagrant/bin/consul tls cert create -server -dc=HKD
+  args:
+    chdir: /home/vagrant/consul_server
+    creates: /home/vagrant/consul_server/HKD-server-consul-0.pem
+
 - name: Kill consul
   command: pkill -9 /home/vagrant/bin/consul
   ignore_errors: yes

@@ -13,29 +13,17 @@
     group: vagrant
     mode: 0644
 
-- name: Deploy nomad CA public cert
+- name: Deploy nomad server certs
   template:
-    src: nomad-ca.pem
-    dest: /home/vagrant/nomad_server/nomad-ca.pem
+    src: "{{ item }}"
+    dest: "/home/vagrant/nomad_server/{{ item }}"
     owner: vagrant
     group: vagrant
     mode: 0600
-
-- name: Deploy nomad server public cert
-  template:
-    src: nomad-server.pem
-    dest: /home/vagrant/nomad_server/nomad-server.pem
-    owner: vagrant
-    group: vagrant
-    mode: 0600
-
-- name: Deploy nomad server cert private key
-  template:
-    src: nomad-server-key.pem
-    dest: /home/vagrant/nomad_server/nomad-server-key.pem
-    owner: vagrant
-    group: vagrant
-    mode: 0600
+  with_items:
+    - nomad-ca.pem # Nomad CA public cert
+    - nomad-server.pem # Nomad server public cert
+    - nomad-server-key.pem # Nomad server private key
 
 - name: Kill nomad
   command: pkill -9 /home/vagrant/bin/nomad

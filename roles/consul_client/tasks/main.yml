@@ -13,6 +13,17 @@
     group: vagrant
     mode: 0644
 
+- name: Deploy consul CA cert
+  template:
+    src: "{{ item }}"
+    dest: "/home/vagrant/consul_client/{{ item }}"
+    owner: vagrant
+    group: vagrant
+    mode: 0600
+  with_items:
+    - consul-agent-ca.pem # Consul CA public cert
+    # - consul-agent-ca-key.pem # Consul CA private key
+
 - name: Kill consul
   command: pkill -9 /home/vagrant/bin/consul
   ignore_errors: yes
