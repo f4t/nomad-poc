@@ -1,5 +1,5 @@
 # Increase log verbosity
-log_level = "INFO"
+log_level = "DEBUG"
 disable_update_check = true
 
 # Setup data dir
@@ -21,6 +21,19 @@ plugin "raw_exec" {
   config {
     enabled = true
   }
+}
+
+tls {
+  http = true
+  rpc  = true
+
+  ca_file   = "nomad-ca.pem"
+  cert_file = "nomad-client.pem"
+  key_file  = "nomad-client-key.pem"
+
+  verify_server_hostname = true
+  # TODO: should be true in PROD with actual CA certs
+  verify_https_client    = false
 }
 
 consul { address = "127.0.0.1:8500" }

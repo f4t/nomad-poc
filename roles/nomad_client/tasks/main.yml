@@ -5,13 +5,37 @@
     state: directory
     mode: '0755'
 
-- name: Deploy nomad server config
+- name: Deploy nomad client config
   template:
     src: nomad_client.hcl
     dest: /home/vagrant/nomad_client/nomad_client.hcl
     owner: vagrant
     group: vagrant
     mode: 0644
+
+- name: Deploy nomad CA public cert
+  template:
+    src: nomad-ca.pem
+    dest: /home/vagrant/nomad_client/nomad-ca.pem
+    owner: vagrant
+    group: vagrant
+    mode: 0600
+
+- name: Deploy nomad client public cert
+  template:
+    src: nomad-client.pem
+    dest: /home/vagrant/nomad_client/nomad-client.pem
+    owner: vagrant
+    group: vagrant
+    mode: 0600
+
+- name: Deploy nomad client cert private key
+  template:
+    src: nomad-client-key.pem
+    dest: /home/vagrant/nomad_client/nomad-client-key.pem
+    owner: vagrant
+    group: vagrant
+    mode: 0600
 
 - name: Kill nomad
   command: pkill -9 /home/vagrant/bin/nomad

@@ -17,4 +17,17 @@ server {
   encrypt = "WSEw4cBdgGYTkDUAyHFKal1DtysVOzNhhzdeEgpGHys="
 }
 
+tls {
+  http = true
+  rpc  = true
+
+  ca_file   = "nomad-ca.pem"
+  cert_file = "nomad-server.pem"
+  key_file  = "nomad-server-key.pem"
+
+  verify_server_hostname = true
+  # TODO: should be true in PROD with actual CA certs
+  verify_https_client    = false
+}
+
 consul { address = "127.0.0.1:8500" }

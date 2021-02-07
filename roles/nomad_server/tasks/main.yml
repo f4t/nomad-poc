@@ -13,6 +13,30 @@
     group: vagrant
     mode: 0644
 
+- name: Deploy nomad CA public cert
+  template:
+    src: nomad-ca.pem
+    dest: /home/vagrant/nomad_server/nomad-ca.pem
+    owner: vagrant
+    group: vagrant
+    mode: 0600
+
+- name: Deploy nomad server public cert
+  template:
+    src: nomad-server.pem
+    dest: /home/vagrant/nomad_server/nomad-server.pem
+    owner: vagrant
+    group: vagrant
+    mode: 0600
+
+- name: Deploy nomad server cert private key
+  template:
+    src: nomad-server-key.pem
+    dest: /home/vagrant/nomad_server/nomad-server-key.pem
+    owner: vagrant
+    group: vagrant
+    mode: 0600
+
 - name: Kill nomad
   command: pkill -9 /home/vagrant/bin/nomad
   args:
