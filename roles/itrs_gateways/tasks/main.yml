@@ -9,3 +9,9 @@
   git:
     repo: git@github.com:f4t/gateway-config.git
     dest: /home/vagrant/gateway_config
+
+- name: Setup git globals - email
+  command: git config --global user.email "cretin@caramail.com"
+
+- name: Setup git globals - name
+  command: git config --global user.name "f4t"
