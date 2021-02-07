@@ -3,4 +3,5 @@ packages/
 gateway_config/
 id_rsa.pub
 id_rsa
+ssl-certs/
 
