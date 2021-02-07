@@ -21,27 +21,40 @@
 
 # Run Nomad Jobs
 - hosts: localhost
+
   tasks:
   - name: Run node_exporter job
     community.general.nomad_job: # Requires python module "python-nomad"
       host: 10.0.50.21
-      use_ssl: no
+      use_ssl: yes
+      client_cert: ./ssl-certs/cli.pem
+      client_key: ./ssl-certs/cli-key.pem
+      validate_certs: no
       state: present
       content: "{{ lookup('ansible.builtin.file', './nomad_jobs/node_exporter.nomad') }}"
       timeout: 120
+    # environment: "{{ local_nomad_cli }}"
 
   - name: Run fabio job
     community.general.nomad_job:
       host: 10.0.50.21
-      use_ssl: no
+      use_ssl: yes
+      client_cert: ./ssl-certs/cli.pem
+      client_key: ./ssl-certs/cli-key.pem
+      validate_certs: no
       state: present
       content: "{{ lookup('ansible.builtin.file', './nomad_jobs/fabio.nomad') }}"
       timeout: 120
+    # environment: "{{ local_nomad_cli }}"
 
   - name: Run licd job
     community.general.nomad_job:
       host: 10.0.50.21
-      use_ssl: no
+      use_ssl: yes
+      client_cert: ./ssl-certs/cli.pem
+      client_key: ./ssl-certs/cli-key.pem
+      validate_certs: no
       state: present
       content: "{{ lookup('ansible.builtin.file', './nomad_jobs/licd.nomad') }}"
       timeout: 120
+    # environment: "{{ local_nomad_cli }}"
