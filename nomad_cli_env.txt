@@ -1,0 +1,4 @@
+export NOMAD_ADDR=https://10.0.50.21:4646
+export NOMAD_CACERT=$(pwd)/ssl-certs/nomad-ca.pem
+export NOMAD_CLIENT_CERT=$(pwd)/ssl-certs/cli.pem
+export NOMAD_CLIENT_KEY=$(pwd)/ssl-certs/cli-key.pem
