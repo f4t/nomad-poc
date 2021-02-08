@@ -1,0 +1,26 @@
+- hosts: localhost
+  vars:
+    nomad_env:
+      NOMAD_CLIENT_CERT: ./ssl-certs/cli.pem
+      NOMAD_CLIENT_KEY: ./ssl-certs/cli-key.pem
+      NOMAD_ADDR: https://10.0.50.21:4646
+      NOMAD_CACERT: ./ssl-certs/nomad-ca.pem
+
+  tasks:
+  - name: Bootstrap Nomad ACL
+    shell: nomad acl bootstrap | grep '^Secret ID' | tr ' ' '\n' | tail -1
+    register: bootstrap_result
+    environment: "{{ nomad_env }}"
+
+  - name: shome
+    debug:
+      msg: "{{ bootstrap_result.stdout }}"
+
+  - name: Set Permissive Anonymous ACL policy
+    command: nomad acl policy apply -description "Anonymous policy (full-access)" anonymous ./roles/nomad_server/templates/anonymous.policy
+    environment: 
+      NOMAD_CLIENT_CERT: "{{ nomad_env.NOMAD_CLIENT_CERT }}"
+      NOMAD_CLIENT_KEY: "{{ nomad_env.NOMAD_CLIENT_KEY }}"
+      NOMAD_ADDR: "{{ nomad_env.NOMAD_ADDR }}"
+      NOMAD_CACERT: "{{ nomad_env.NOMAD_CACERT }}"
+      NOMAD_TOKEN: "{{ bootstrap_result.stdout }}"

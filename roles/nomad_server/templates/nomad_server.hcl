@@ -1,5 +1,5 @@
 # Increase log verbosity
-log_level = "DEBUG"
+log_level = "INFO"
 disable_update_check = true
 
 # Setup data dir
@@ -28,6 +28,10 @@ tls {
   verify_server_hostname = true
   # TODO: should be true in PROD with actual CA certs
   verify_https_client    = false
+}
+
+acl {
+  enabled = true
 }
 
 consul { address = "127.0.0.1:8500" }
