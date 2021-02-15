@@ -18,3 +18,7 @@
 - hosts: nomad_clients
   roles:
   - nomad_client
+
+- hosts: vault_servers
+  roles:
+  - vault_consul_server

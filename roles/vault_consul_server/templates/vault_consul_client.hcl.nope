@@ -1,0 +1,36 @@
+bind_addr = "{{ '{{' }} GetInterfaceIP \"eth1\" {{ '}}' }}"
+client_addr = "127.0.0.1"
+datacenter = "HKD"
+data_dir = "./data"
+domain = "consul"
+# TODO: Gossip encryption key should come from Vault
+encrypt = "5eqeBvL3Ej4jLR8unhcbXUqF5abLAgW2TRU2dm4PEE0="
+log_level = "INFO"
+enable_syslog = true
+enable_debug = true
+server = false
+rejoin_after_leave = true
+retry_join = [
+  "10.0.50.41",
+  "10.0.50.42",
+  "10.0.50.43"
+]
+
+ports {
+    http = 8500
+    dns = 8600
+    server = 18300
+    grpc = 8502
+    serf_lan = 18301
+    serf_wan = 18302
+}
+
+disable_update_check = true
+
+verify_incoming = false
+verify_outgoing = true
+verify_server_hostname = true
+ca_file = "consul-agent-ca.pem"
+auto_encrypt = {
+  tls = true
+}

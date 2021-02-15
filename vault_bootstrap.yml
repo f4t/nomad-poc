@@ -1,0 +1,97 @@
+- hosts: localhost
+  vars:
+    consul_env:
+      CONSUL_HTTP_ADDR: 10.0.50.41:18500
+
+  tasks:
+  - name: Vault Consul server ACL bootstrap
+    shell: consul acl bootstrap | grep '^SecretID' | awk '{print $2}'
+    register: consul_mgmt_token
+    environment: "{{ consul_env }}"
+
+  - name: Management Token
+    debug:
+      msg: "{{ consul_mgmt_token.stdout }}"
+
+  - name: Generate Vault Consul node ACL policy
+    shell: consul acl policy create \
+      -token ${CONSUL_MGMT_TOKEN} \
+      -name node-policy \
+      -rules @./roles/vault_consul_server/templates/node-policy.hcl
+    environment: 
+      CONSUL_HTTP_ADDR: "{{consul_env.CONSUL_HTTP_ADDR}}"
+      CONSUL_MGMT_TOKEN: "{{ consul_mgmt_token.stdout }}"
+    ignore_errors: yes
+
+  - name: Generate Consul node token
+    shell: consul acl token create \
+      -token ${CONSUL_MGMT_TOKEN} \
+      -description "node token" \
+      -policy-name node-policy | grep '^SecretID' | awk '{print $2}'
+    environment: 
+      CONSUL_HTTP_ADDR: "{{consul_env.CONSUL_HTTP_ADDR}}"
+      CONSUL_MGMT_TOKEN: "{{ consul_mgmt_token.stdout }}"
+    register: consul_node_token
+
+  - name: Consul Node token
+    debug:
+      msg: "{{ consul_node_token.stdout }}"
+
+  # Dummy host to pass tokens between plays:
+  - name: "Register tokens to dummy host"
+    add_host:
+      name: "TOKEN_HOLDER"
+      consul_mgmt_token: "{{ consul_mgmt_token.stdout }}"
+      consul_node_token: "{{ consul_node_token.stdout }}"
+      # consul_mgmt_token: "TEST_TOKEN"
+      # consul_node_token: "TEST_TOKEN"
+
+- hosts: vault_servers
+  tasks:
+  - name: Add node token to Consul servers
+    shell: /home/vagrant/bin/consul \
+      acl set-agent-token \
+      -token=${CONSUL_MGMT_TOKEN} \
+      agent "${CONSUL_NODE_TOKEN}"
+    environment: 
+      CONSUL_HTTP_ADDR: "{{ansible_eth1.ipv4.address}}:18500"
+      CONSUL_MGMT_TOKEN: "{{ hostvars['TOKEN_HOLDER']['consul_mgmt_token'] }}"
+      CONSUL_NODE_TOKEN: "{{ hostvars['TOKEN_HOLDER']['consul_node_token'] }}"
+  - name: Add node token to Consul clients
+    shell: /home/vagrant/bin/consul \
+      acl set-agent-token \
+      -token=${CONSUL_MGMT_TOKEN} \
+      agent "${CONSUL_NODE_TOKEN}"
+    environment: 
+      CONSUL_HTTP_ADDR: "{{ansible_eth1.ipv4.address}}:8500"
+      CONSUL_MGMT_TOKEN: "{{ hostvars['TOKEN_HOLDER']['consul_mgmt_token'] }}"
+      CONSUL_NODE_TOKEN: "{{ hostvars['TOKEN_HOLDER']['consul_node_token'] }}"
+
+- hosts: localhost
+  vars:
+    consul_env:
+      CONSUL_HTTP_ADDR: 10.0.50.41:18500
+  tasks:
+  - name: Generate Consul Vault ACL policy
+    shell: consul acl policy create \
+      -token ${CONSUL_MGMT_TOKEN} \
+      -name vault-policy \
+      -rules @./roles/vault_consul_server/templates/vault-policy.hcl
+    environment: 
+      CONSUL_HTTP_ADDR: "{{consul_env.CONSUL_HTTP_ADDR}}"
+      CONSUL_MGMT_TOKEN: "{{ hostvars['TOKEN_HOLDER']['consul_mgmt_token'] }}"
+    ignore_errors: yes
+
+  - name: Create Vault service token
+    shell: consul acl token create \
+      -token ${CONSUL_MGMT_TOKEN} \
+      -description "Token for Vault Service" \
+      -policy-name vault-policy | grep '^SecretID' | awk '{print $2}'
+    environment: 
+      CONSUL_HTTP_ADDR: "{{consul_env.CONSUL_HTTP_ADDR}}"
+      CONSUL_MGMT_TOKEN: "{{ hostvars['TOKEN_HOLDER']['consul_mgmt_token'] }}"
+    register: vault_service_token
+
+  - name: Vault Service token
+    debug:
+      msg: "{{ vault_service_token.stdout }}"

@@ -1,0 +1,78 @@
+---
+- name: Kill consul
+  command: pkill -9 /home/vagrant/bin/consul
+  ignore_errors: yes
+
+# Consul server:
+- name: Create vault_consul_server dir
+  file:
+    path: /home/vagrant/vault_consul_server/consul.d
+    state: directory
+    mode: '0755'
+
+- name: Deploy Vault cluster consul server config
+  template:
+    src: "{{ item }}"
+    dest: "/home/vagrant/vault_consul_server/consul.d/{{ item }}"
+    owner: vagrant
+    group: vagrant
+    mode: 0644
+  with_items:
+    - vault_consul_server.hcl
+    - acl.hcl
+
+- name: Deploy consul CA cert
+  template:
+    src: "{{ item }}"
+    dest: "/home/vagrant/vault_consul_server/{{ item }}"
+    owner: vagrant
+    group: vagrant
+    mode: 0600
+  with_items:
+    - consul-agent-ca.pem # Consul CA public cert
+    - consul-agent-ca-key.pem # Consul CA private key
+
+- name: Generate consul server certs
+  command: /home/vagrant/bin/consul tls cert create -server -dc=HKD
+  args:
+    chdir: /home/vagrant/vault_consul_server
+    creates: /home/vagrant/vault_consul_server/HKD-server-consul-0.pem
+
+- name: Run Vault cluster Consul server
+  command: screen -dmS consul-server /home/vagrant/bin/consul agent -config-dir ./consul.d
+  args:
+    chdir: /home/vagrant/vault_consul_server/
+
+# Consul Client:
+
+# - name: Create vault_consul_client dir
+#   file:
+#     path: /home/vagrant/vault_consul_client/consul.d
+#     state: directory
+#     mode: '0755'
+
+# - name: Deploy Vault cluster consul client config
+#   template:
+#     src: "{{ item }}"
+#     dest: "/home/vagrant/vault_consul_client/consul.d/{{ item }}"
+#     owner: vagrant
+#     group: vagrant
+#     mode: 0644
+#   with_items:
+#     - vault_consul_client.hcl
+
+# - name: Deploy consul CA cert
+#   template:
+#     src: "{{ item }}"
+#     dest: "/home/vagrant/vault_consul_client/{{ item }}"
+#     owner: vagrant
+#     group: vagrant
+#     mode: 0600
+#   with_items:
+#     - consul-agent-ca.pem # Consul CA public cert
+
+# - name: Run Vault cluster Consul client
+#   command: screen -dmS consul-client /home/vagrant/bin/consul agent -config-dir ./consul.d
+#   args:
+#     chdir: /home/vagrant/vault_consul_client/
+
