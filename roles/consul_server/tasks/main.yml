@@ -1,22 +1,42 @@
 ---
+- name: Check if Consul is already running
+  shell: screen -ls | grep 'consul-server' | awk '{print $1}'
+  register: screen_name
+
+# - name: Kill Consul
+#   shell: screen -X -S {{ screen_name.stdout }} quit
+#   when: screen_name.stdout != ""
+
+- name: Kill Consul
+  shell: pkill -9 consul
+  when: screen_name.stdout != ""
+
+- name: Wipe consul server dir
+  file:
+    path: "{{ BASE_DIR }}/consul_server"
+    state: absent
+
 - name: Create consul_server dir
   file:
-    path: /home/vagrant/consul_server/consul.d
+    path: "{{ BASE_DIR }}/consul_server/consul.d"
     state: directory
     mode: '0755'
 
 - name: Deploy consul server config
   template:
-    src: consul_server.hcl
-    dest: /home/vagrant/consul_server/consul.d/consul_server.hcl
+    src: "{{ item }}"
+    dest: "{{ BASE_DIR }}/consul_server/consul.d/{{ item }}"
     owner: vagrant
     group: vagrant
     mode: 0644
+  with_items:
+    - consul_server.hcl
+    # - acl.hcl
 
 - name: Deploy consul CA cert
   template:
     src: "{{ item }}"
-    dest: "/home/vagrant/consul_server/{{ item }}"
+    dest: "{{ BASE_DIR }}/consul_server/{{ item }}"
     owner: vagrant
     group: vagrant
     mode: 0600
@@ -25,16 +45,27 @@
     - consul-agent-ca-key.pem # Consul CA private key
 
 - name: Generate consul server certs
-  command: /home/vagrant/bin/consul tls cert create -server -dc=HKD
+  command: "{{ BASE_DIR }}/bin/consul tls cert create -server -dc=HKD"
   args:
-    chdir: /home/vagrant/consul_server
-    creates: /home/vagrant/consul_server/HKD-server-consul-0.pem
-
-- name: Kill consul
-  command: pkill -9 /home/vagrant/bin/consul
-  ignore_errors: yes
+    chdir: "{{ BASE_DIR }}/consul_server"
+    creates: "{{ BASE_DIR }}/consul_server/HKD-server-consul-0.pem"
 
 - name: Run Consul server
-  command: screen -dmS consul /home/vagrant/bin/consul agent -config-dir ./consul.d
+  command: screen -dmS consul-server {{ BASE_DIR }}/bin/consul agent -config-dir ./consul.d
   args:
-    chdir: /home/vagrant/consul_server/
+    chdir: "{{ BASE_DIR }}/consul_server/"
+
+# - name: Wait for Consul cluster to be ready for bootstraping
+#   wait_for:
+#     timeout: 10
+#   delegate_to: localhost
+
+# - name: Consul ACL bootstrap
+#   shell: "{{ BASE_DIR }}/bin/consul acl bootstrap | grep '^SecretID' | awk '{print $2}'"
+#   register: consul_mgmt_token
+#   when: inventory_hostname == "10.0.50.11"
+
+# - name: Consul Management Token
+#   debug:
+#     msg: "{{ consul_mgmt_token.stdout }}"
+#   when: inventory_hostname == "10.0.50.11"

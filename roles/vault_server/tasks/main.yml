@@ -1,0 +1,67 @@
+---
+- name: Check if vault is already running
+  shell: screen -ls | grep 'vault-server' | awk '{print $1}'
+  register: screen_name
+
+- name: Kill vault
+  shell: pkill -9 vault
+  when: screen_name.stdout != ""
+
+- name: Wipe vault server dir
+  file:
+    path: "{{ BASE_DIR }}/vault_server"
+    state: absent
+
+- name: Create vault_server dir
+  file:
+    path: "{{ BASE_DIR }}/vault_server/vault.d"
+    state: directory
+    mode: '0755'
+
+- name: Deploy vault server config
+  template:
+    src: "{{ item }}"
+    dest: "{{ BASE_DIR }}/vault_server/vault.d/{{ item }}"
+    owner: vagrant
+    group: vagrant
+    mode: 0644
+  with_items:
+    - vault_server.hcl
+
+- name: Deploy vault server certs
+  template:
+    src: "{{ item }}"
+    dest: "{{ BASE_DIR }}/vault_server/{{ item }}"
+    owner: vagrant
+    group: vagrant
+    mode: 0600
+  with_items:
+    - nomad-ca.pem # Nomad CA public cert
+    - vault-server.pem # Nomad server public cert
+    - vault-server-key.pem # Nomad server private key
+
+# - name: Generate vault server certs
+#   command: "{{ BASE_DIR }}/bin/vault tls cert create -server -dc=HKD"
+#   args:
+#     chdir: "{{ BASE_DIR }}/vault_server"
+#     creates: "{{ BASE_DIR }}/vault_server/HKD-server-vault-0.pem"
+
+# - name: Run vault server
+#   command: screen -dmS vault-server {{ BASE_DIR }}/bin/vault server -config ./vault.d/vault_server.hcl
+#   args:
+#     chdir: "{{ BASE_DIR }}/vault_server/"
+
+# - name: Wait for vault cluster to be ready for bootstraping
+#   wait_for:
+#     timeout: 10
+#   delegate_to: localhost
+
+# - name: vault ACL bootstrap
+#   shell: "{{ BASE_DIR }}/bin/vault acl bootstrap | grep '^SecretID' | awk '{print $2}'"
+#   register: vault_mgmt_token
+#   when: inventory_hostname == "10.0.50.11"
+
+# - name: vault Management Token
+#   debug:
+#     msg: "{{ vault_mgmt_token.stdout }}"
+#   when: inventory_hostname == "10.0.50.11"

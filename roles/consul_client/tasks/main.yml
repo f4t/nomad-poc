@@ -1,14 +1,31 @@
 ---
+- name: Check if Consul is already running
+  shell: screen -ls | grep 'consul-client' | awk '{print $1}'
+  register: screen_name
+
+# - name: Kill Consul
+#   shell: screen -X -S {{ screen_name.stdout }} quit
+#   when: screen_name.stdout != ""
+
+- name: Kill Consul
+  shell: pkill -9 consul
+  when: screen_name.stdout != ""
+
+- name: Wipe consul client dir
+  file:
+    path: "{{ BASE_DIR }}/consul_client"
+    state: absent
+
 - name: Create consul_client dir
   file:
-    path: /home/vagrant/consul_client/consul.d
+    path: "{{ BASE_DIR }}/consul_client/consul.d"
     state: directory
     mode: '0755'
 
 - name: Deploy consul client config
   template:
     src: consul_client.hcl
-    dest: /home/vagrant/consul_client/consul.d/consul_client.hcl
+    dest: "{{ BASE_DIR }}/consul_client/consul.d/consul_client.hcl"
     owner: vagrant
     group: vagrant
     mode: 0644
@@ -16,19 +33,14 @@
 - name: Deploy consul CA cert
   template:
     src: "{{ item }}"
-    dest: "/home/vagrant/consul_client/{{ item }}"
+    dest: "{{ BASE_DIR }}/consul_client/{{ item }}"
     owner: vagrant
     group: vagrant
     mode: 0600
   with_items:
     - consul-agent-ca.pem # Consul CA public cert
-    # - consul-agent-ca-key.pem # Consul CA private key
-
-- name: Kill consul
-  command: pkill -9 /home/vagrant/bin/consul
-  ignore_errors: yes
 
 - name: Run Consul client
-  command: screen -dmS consul /home/vagrant/bin/consul agent -config-dir ./consul.d
+  command: screen -dmS consul-client {{ BASE_DIR }}/bin/consul agent -config-dir ./consul.d
   args:
-    chdir: /home/vagrant/consul_client/
+    chdir: "{{ BASE_DIR }}/consul_client/"

@@ -1,8 +1,5 @@
-10.0.50.11	consul-server-1
-10.0.50.12	consul-server-2
-10.0.50.13	consul-server-3
-10.0.50.21	nomad-server-1
-10.0.50.22	nomad-server-2
-10.0.50.23	nomad-server-3
-10.0.50.31	nomad-client-1
-10.0.50.31	nomad-client-2
+10.0.50.11	server-1
+10.0.50.12	server-2
+10.0.50.13	server-3
+10.0.50.21	client-1
+10.0.50.22	client-2

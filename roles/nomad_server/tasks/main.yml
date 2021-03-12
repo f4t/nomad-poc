@@ -1,14 +1,31 @@
 ---
+- name: Check if Nomad is already running
+  shell: screen -ls | grep 'nomad-server' | awk '{print $1}'
+  register: screen_name
+
+# - name: Kill Nomad
+#   shell: screen -X -S {{ screen_name.stdout }} quit
+#   when: screen_name.stdout != ""
+
+- name: Kill Consul
+  shell: pkill -9 nomad
+  when: screen_name.stdout != ""
+
+- name: Wipe nomad server dir
+  file:
+    path: "{{ BASE_DIR }}/nomad_server"
+    state: absent
+
 - name: Create nomad_server dir
   file:
-    path: /home/vagrant/nomad_server
+    path: "{{ BASE_DIR }}/nomad_server"
     state: directory
     mode: '0755'
 
 - name: Deploy nomad server config
   template:
     src: nomad_server.hcl
-    dest: /home/vagrant/nomad_server/nomad_server.hcl
+    dest: "{{ BASE_DIR }}/nomad_server/nomad_server.hcl"
     owner: vagrant
     group: vagrant
     mode: 0644
@@ -16,7 +33,7 @@
 - name: Deploy nomad server certs
   template:
     src: "{{ item }}"
-    dest: "/home/vagrant/nomad_server/{{ item }}"
+    dest: "{{ BASE_DIR }}/nomad_server/{{ item }}"
     owner: vagrant
     group: vagrant
     mode: 0600
@@ -25,13 +42,7 @@
     - nomad-server.pem # Nomad server public cert
     - nomad-server-key.pem # Nomad server private key
 
-- name: Kill nomad
-  command: pkill -9 /home/vagrant/bin/nomad
-  args:
-    chdir: /home/vagrant/nomad_server/
-  ignore_errors: yes
-
 - name: Run nomad server
-  command: screen -dmS nomad /home/vagrant/bin/nomad agent -config ./nomad_server.hcl
+  command: screen -dmS nomad-server {{ BASE_DIR }}/bin/nomad agent -config ./nomad_server.hcl
   args:
-    chdir: /home/vagrant/nomad_server/
+    chdir: "{{ BASE_DIR }}/nomad_server/"
