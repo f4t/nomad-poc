@@ -29,16 +29,16 @@
     force: yes
   become: yes
 
-- name: Wipe Vault Consul server data
-  file:
-    path: /home/vagrant/vault_consul_server/data
-    state: absent
-    force: yes
-  become: yes
+# - name: Wipe Vault Consul server data
+#   file:
+#     path: /home/vagrant/vault_consul_server/data
+#     state: absent
+#     force: yes
+#   become: yes
 
-- name: Wipe Vault Consul client data
-  file:
-    path: /home/vagrant/vault_consul_client/data
-    state: absent
-    force: yes
-  become: yes
+# - name: Wipe Vault Consul client data
+#   file:
+#     path: /home/vagrant/vault_consul_client/data
+#     state: absent
+#     force: yes
+#   become: yes

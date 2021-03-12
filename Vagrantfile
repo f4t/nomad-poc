@@ -11,37 +11,19 @@ Vagrant.configure("2") do |config|
 
   # Setup Server hosts
   (1..SERVER_COUNT).each do |i|
-    config.vm.define "consul-server-#{i}" do |subconfig|
+    config.vm.define "server-#{i}" do |subconfig|
       subconfig.vm.box = BOX_IMAGE
-      subconfig.vm.hostname =  "consul-server-#{i}"
+      subconfig.vm.hostname =  "server-#{i}"
       subconfig.vm.network "private_network", ip: "10.0.50.#{10+i}"
-    end
-  end
-
-  # Setup Server hosts
-  (1..SERVER_COUNT).each do |i|
-    config.vm.define "nomad-server-#{i}" do |subconfig|
-      subconfig.vm.box = BOX_IMAGE
-      subconfig.vm.hostname =  "nomad-server-#{i}"
-      subconfig.vm.network "private_network", ip: "10.0.50.#{20+i}"
     end
   end
 
   # Setup Client hosts
   (1..CLIENT_COUNT).each do |i|
-    config.vm.define "nomad-client-#{i}" do |subconfig|
+    config.vm.define "client-#{i}" do |subconfig|
       subconfig.vm.box = BOX_IMAGE
-      subconfig.vm.hostname =  "nomad-client-#{i}"
-      subconfig.vm.network "private_network", ip: "10.0.50.#{30+i}"
-    end
-  end
-
-  # Setup Vault Server hosts
-  (1..SERVER_COUNT).each do |i|
-    config.vm.define "vault-server-#{i}" do |subconfig|
-      subconfig.vm.box = BOX_IMAGE
-      subconfig.vm.hostname =  "vault-server-#{i}"
-      subconfig.vm.network "private_network", ip: "10.0.50.#{40+i}"
+      subconfig.vm.hostname =  "client-#{i}"
+      subconfig.vm.network "private_network", ip: "10.0.50.#{20+i}"
     end
   end
 

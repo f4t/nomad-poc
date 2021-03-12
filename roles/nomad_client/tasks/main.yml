@@ -1,14 +1,31 @@
 ---
+- name: Check if Nomad is already running
+  shell: screen -ls | grep 'nomad-client' | awk '{print $1}'
+  register: screen_name
+
+# - name: Kill Nomad
+#   shell: screen -X -S {{ screen_name.stdout }} quit
+#   when: screen_name.stdout != ""
+
+- name: Kill Nomad
+  shell: pkill -9 nomad
+  when: screen_name.stdout != ""
+
+- name: Wipe Nomad client dir
+  file:
+    path: "{{ BASE_DIR }}/nomad_client"
+    state: absent
+
 - name: Create nomad_client dir
   file:
-    path: /home/vagrant/nomad_client
+    path: "{{ BASE_DIR }}/nomad_client"
     state: directory
     mode: '0755'
 
 - name: Deploy nomad client config
   template:
     src: nomad_client.hcl
-    dest: /home/vagrant/nomad_client/nomad_client.hcl
+    dest: "{{ BASE_DIR }}/nomad_client/nomad_client.hcl"
     owner: vagrant
     group: vagrant
     mode: 0644
@@ -16,7 +33,7 @@
 - name: Deploy nomad client certs
   template:
     src: "{{ item }}"
-    dest: "/home/vagrant/nomad_client/{{ item }}"
+    dest: "{{ BASE_DIR }}/nomad_client/{{ item }}"
     owner: vagrant
     group: vagrant
     mode: 0600
@@ -25,11 +42,7 @@
     - nomad-client.pem # Nomad client public cert
     - nomad-client-key.pem # Nomad client private key
 
-- name: Kill nomad
-  command: pkill -9 /home/vagrant/bin/nomad
-  ignore_errors: yes
-
 - name: Run nomad client
-  command: screen -dmS nomad /home/vagrant/bin/nomad agent -config ./nomad_client.hcl
+  command: screen -dmS nomad {{ BASE_DIR }}/bin/nomad agent -config ./nomad_client.hcl
   args:
-    chdir: /home/vagrant/nomad_client/
+    chdir: "{{ BASE_DIR }}/nomad_client/"

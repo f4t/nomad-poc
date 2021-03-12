@@ -1,5 +1,5 @@
 bootstrap_expect = 3
-client_addr = "{{ '{{' }} GetInterfaceIP \"eth1\" {{ '}}' }}"
+client_addr = "0.0.0.0"
 bind_addr = "{{ '{{' }} GetInterfaceIP \"eth1\" {{ '}}' }}"
 datacenter = "HKD"
 data_dir = "./data"
@@ -21,6 +21,11 @@ retry_join = [
   "10.0.50.12",
   "10.0.50.13"
 ]
+
+# ports {
+#  http = -1
+#  https = 8501
+#}
 
 ui_config {
   enabled = true

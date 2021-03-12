@@ -3,7 +3,7 @@
     nomad_env:
       NOMAD_CLIENT_CERT: ./ssl-certs/cli.pem
       NOMAD_CLIENT_KEY: ./ssl-certs/cli-key.pem
-      NOMAD_ADDR: https://10.0.50.21:4646
+      NOMAD_ADDR: https://10.0.50.11:4646
       NOMAD_CACERT: ./ssl-certs/nomad-ca.pem
 
   tasks:

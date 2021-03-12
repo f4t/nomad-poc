@@ -91,14 +91,14 @@
 
   - name: Install node_exporter
     unarchive:
-      src: https://github.com/prometheus/node_exporter/releases/download/v1.0.1/node_exporter-1.0.1.linux-amd64.tar.gz
+      src: https://github.com/prometheus/node_exporter/releases/download/v1.1.1/node_exporter-1.1.1.linux-amd64.tar.gz
       dest: /home/vagrant/bin
       remote_src: yes
     when: not node_exporter.stat.exists
 
   - name: Create symlink for node_exporter bin
     file:
-      src: "/home/vagrant/bin/node_exporter-1.0.1.linux-amd64/node_exporter"
+      src: "/home/vagrant/bin/node_exporter-1.1.1.linux-amd64/node_exporter"
       dest: "/home/vagrant/bin/node_exporter"
       state: link
 
